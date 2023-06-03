@@ -1,0 +1,17 @@
+{
+  "_data_files": [
+    {
+      "filename": "dataset.arrow"
+    }
+  ],
+  "_fingerprint": "0ae7a3e217b14548",
+  "_format_columns": [
+    "en_ids",
+    "de_ids"
+  ],
+  "_format_kwargs": {},
+  "_format_type": "torch",
+  "_indexes": {},
+  "_output_all_columns": true,
+  "_split": "train"
+}
