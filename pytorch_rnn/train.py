@@ -116,12 +116,11 @@ def _get_train_data_loader(batch_size, training_dir,pad_index, is_distributed, *
     logger.info("Get train data loader")
 
     # dataset  = pd.read_csv('train_data.csv')
-    dataset = datasets.load_from_disk('train_data')
+#     dataset = datasets.load_from_disk('train_data')
     # pickle_file = os.path.join(training_dir, 'train_data.pkl')
-
-    # Load the data from the pickle file
-    # with open(pickle_file, 'rb') as f:
-    #     dataset = pickle.load(f)
+    training_dir = os.environ['SM_CHANNEL_TRAINING']
+    
+    dataset = datasets.load_from_disk(f'{training_dir}/train_data')
 
     collate_fn = get_collate_fn(pad_index)
 
@@ -141,13 +140,10 @@ def _get_train_data_loader(batch_size, training_dir,pad_index, is_distributed, *
 def _get_test_data_loader(batch_size, training_dir,pad_index,**kwargs):
     logger.info("Get test data loader")
 
-    # dataset  = pd.read_csv('test_data.csv')
-    dataset = datasets.load_from_disk('test_data')
+#     dataset = datasets.load_from_disk('test_data')
+    training_dir = os.environ['SM_CHANNEL_TRAINING']
+    dataset = datasets.load_from_disk(f'{training_dir}/test_data')
     # pickle_file = os.path.join(training_dir, 'test_data.pkl')
-
-    # # Load the data from the pickle file
-    # with open(pickle_file, 'rb') as f:
-    #     dataset = pickle.load(f)
 
     collate_fn = get_collate_fn(pad_index)
 
@@ -215,7 +211,7 @@ def train(args):
     kwargs = {"num_workers": 0, "pin_memory": True} if use_cuda else {}
     device = torch.device("cuda" if use_cuda else "cpu")
 
-    is_distributed=False
+    # is_distributed=False
 
     if is_distributed:
         # Initialize the distributed environment.
@@ -393,11 +389,10 @@ if __name__ == "__main__":
     )
 
     # Container environment
-    parser.add_argument("--hosts", type=list)
-    parser.add_argument("--current-host", type=str)
-    parser.add_argument("--model-dir", type=str)
-    parser.add_argument("--data-dir", type=str)
-    parser.add_argument("--num-gpus", type=int)
+    parser.add_argument("--hosts", type=list, default=json.loads(os.environ["SM_HOSTS"]))
+    parser.add_argument("--current-host", type=str, default=os.environ["SM_CURRENT_HOST"])
+    parser.add_argument("--model-dir", type=str, default=os.environ["SM_MODEL_DIR"])
+    parser.add_argument("--data-dir", type=str, default=os.environ["SM_CHANNEL_TRAINING"])
+    parser.add_argument("--num-gpus", type=int, default=os.environ["SM_NUM_GPUS"])
 
     train(parser.parse_args())
-

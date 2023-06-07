@@ -53,7 +53,6 @@ fn_kwargs = {
 
 
 train_data = train_data.map(tokenize_example, fn_kwargs=fn_kwargs)
-# valid_data = valid_data.map(tokenize_example, fn_kwargs=fn_kwargs)
 test_data = test_data.map(tokenize_example, fn_kwargs=fn_kwargs)
 
 min_freq = 2
@@ -104,7 +103,6 @@ print(len(en_vocab))
 print(len(de_vocab))
 
 train_data = train_data.map(numericalize_example, fn_kwargs=fn_kwargs)
-# valid_data = valid_data.map(numericalize_example, fn_kwargs=fn_kwargs)
 test_data = test_data.map(numericalize_example, fn_kwargs=fn_kwargs)
 
 data_type = "torch"
@@ -116,28 +114,11 @@ train_data = train_data.with_format(
     output_all_columns=True
 )
 
-# valid_data = valid_data.with_format(
-#     type=data_type, 
-#     columns=format_columns, 
-#     output_all_columns=True,
-# )
-
 test_data = test_data.with_format(
     type=data_type, 
     columns=format_columns, 
     output_all_columns=True,
 )
 
-
 train_data.save_to_disk('train_data')
-# valid_data.save_to_disk('valid_data')
 test_data.save_to_disk('test_data')
-
-# with open('train_data.pkl', 'wb') as f:
-#     pickle.dump(train_data, f)
-# # with open('valid_data.pkl', 'wb') as f:
-# #     pickle.dump(valid_data, f)
-# with open('test_data.pkl', 'wb') as f:
-#     pickle.dump(test_data, f)
-
-# print(type(train_data))
